@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Kitobam — O'zbekiston Kitob Do'koni</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,700;0,800;0,900;1,800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --orange:#F7941D;
+  --orange-dark:#d97c0a;
+  --orange-deep:#b86200;
+  --orange-light:#fff3e0;
+  --orange-pale:#FFF8F0;
+  --cream:#FDFAF5;
+  --text:#1C1208;
+  --text-muted:#7a5c2e;
+  --border:#f0dfc0;
+  --white:#ffffff;
+  --success:#2d6a2d;
+  --success-bg:#e8f5e8;
+  --shadow:0 8px 32px rgba(180,100,0,0.12);
+  --shadow-hover:0 16px 48px rgba(180,100,0,0.22);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;font-weight:700;background:var(--cream);color:var(--text);overflow-x:hidden}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--orange-pale)}
+::-webkit-scrollbar-thumb{background:var(--orange);border-radius:3px}
+
+/* ===== NAVBAR ===== */
+.navbar{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  background:rgba(255,255,255,0.95);
+  backdrop-filter:blur(12px);
+  border-bottom:2px solid var(--border);
+  padding:0 5%;
+  display:flex;align-items:center;justify-content:space-between;
+  height:70px;
+  transition:box-shadow .3s;
+}
+.navbar.scrolled{box-shadow:0 4px 24px rgba(180,100,0,0.1)}
+.nav-logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+.nav-logo-circle{width:42px;height:42px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(247,148,29,0.4)}
+.nav-logo-circle svg{width:24px;height:24px}
+.nav-logo-text{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:var(--orange)}
+.nav-links{display:flex;align-items:center;gap:8px}
+.nav-link{color:var(--text-muted);padding:8px 16px;border-radius:20px;font-size:14px;font-weight:800;cursor:pointer;border:none;background:none;transition:all .2s;text-decoration:none}
+.nav-link:hover,.nav-link.active{color:var(--orange);background:var(--orange-light)}
+.nav-right{display:flex;align-items:center;gap:10px}
+.search-bar{
+  display:flex;align-items:center;gap:8px;
+  background:var(--orange-pale);border:2px solid var(--border);
+  border-radius:24px;padding:8px 16px;
+  transition:border .2s,box-shadow .2s;
+}
+.search-bar:focus-within{border-color:var(--orange);box-shadow:0 0 0 4px rgba(247,148,29,0.1)}
+.search-bar svg{stroke:var(--text-muted);flex-shrink:0}
+.search-bar input{border:none;background:none;outline:none;font-size:14px;font-weight:700;font-family:'Nunito',sans-serif;color:var(--text);width:180px}
+.search-bar input::placeholder{color:#bbb}
+.cart-btn{
+  position:relative;background:var(--orange);color:#fff;
+  border:none;border-radius:50%;width:42px;height:42px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .2s;
+  box-shadow:0 4px 12px rgba(247,148,29,0.4);
+}
+.cart-btn:hover{transform:scale(1.08);background:var(--orange-dark)}
+.cart-count{
+  position:absolute;top:-4px;right:-4px;
+  background:var(--text);color:#fff;
+  font-size:10px;font-weight:900;
+  width:18px;height:18px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* ===== HERO ===== */
+.hero{
+  margin-top:70px;
+  min-height:520px;
+  background-color:var(--orange);
+  background-image:repeating-linear-gradient(45deg,rgba(255,255,255,0.06) 0px,rgba(255,255,255,0.06) 1px,transparent 1px,transparent 22px);
+  display:flex;align-items:center;
+  padding:60px 5%;
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 70% 50%,rgba(255,255,255,0.1) 0%,transparent 60%);
+  pointer-events:none;
+}
+.hero-content{max-width:560px;position:relative;z-index:1;animation:fadeUp .7s ease both}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,0.2);color:#fff;
+  padding:6px 14px;border-radius:20px;
+  font-size:13px;font-weight:800;margin-bottom:20px;
+  border:1px solid rgba(255,255,255,0.3);
+}
+.hero h1{
+  font-family:'Playfair Display',serif;
+  font-size:52px;font-weight:900;
+  color:#fff;line-height:1.1;
+  margin-bottom:16px;
+}
+.hero h1 em{font-style:italic;color:rgba(255,255,255,0.85)}
+.hero p{font-size:16px;color:rgba(255,255,255,0.85);margin-bottom:28px;line-height:1.6}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap}
+.btn-hero{
+  padding:13px 28px;border-radius:12px;
+  font-size:15px;font-weight:900;cursor:pointer;
+  font-family:'Nunito',sans-serif;
+  transition:all .2s;border:2px solid transparent;
+  display:flex;align-items:center;gap:8px;
+}
+.btn-hero-primary{background:#fff;color:var(--orange);box-shadow:0 6px 20px rgba(0,0,0,0.15)}
+.btn-hero-primary:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(0,0,0,0.2)}
+.btn-hero-secondary{background:transparent;color:#fff;border-color:rgba(255,255,255,0.5)}
+.btn-hero-secondary:hover{background:rgba(255,255,255,0.15);border-color:#fff}
+.hero-visual{
+  position:absolute;right:5%;top:50%;transform:translateY(-50%);
+  display:flex;gap:16px;align-items:flex-end;
+  animation:fadeUp .9s ease .2s both;
+}
+.hero-book{
+  width:110px;border-radius:10px;overflow:hidden;
+  box-shadow:0 20px 50px rgba(0,0,0,0.25);
+  transition:transform .3s;cursor:pointer;
+}
+.hero-book:hover{transform:translateY(-8px) rotate(-2deg)}
+.hero-book:nth-child(2){margin-bottom:20px}
+.hero-book:nth-child(3){margin-bottom:10px}
+.hero-book-cover{
+  height:150px;display:flex;align-items:center;justify-content:center;
+  font-size:2.5rem;
+}
+.hero-book-info{background:#fff;padding:8px 10px}
+.hero-book-title{font-size:11px;font-weight:900;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hero-book-price{font-size:12px;font-weight:900;color:var(--orange)}
+
+/* ===== STATS BAR ===== */
+.stats-bar{
+  background:#fff;border-bottom:2px solid var(--border);
+  padding:16px 5%;
+  display:flex;align-items:center;justify-content:center;gap:0;
+  flex-wrap:wrap;
+}
+.stat-item{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 32px;
+  border-right:1px solid var(--border);
+}
+.stat-item:last-child{border-right:none}
+.stat-item svg{stroke:var(--orange);flex-shrink:0}
+.stat-num{font-size:20px;font-weight:900;color:var(--text)}
+.stat-lbl{font-size:12px;color:var(--text-muted);font-weight:800}
+
+/* ===== SECTIONS ===== */
+.section{padding:60px 5%}
+.section-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:32px;flex-wrap:wrap;gap:12px}
+.section-title{font-family:'Playfair Display',serif;font-size:32px;font-weight:900;color:var(--text)}
+.section-title span{color:var(--orange)}
+.section-sub{font-size:14px;color:var(--text-muted);font-weight:800;margin-top:4px}
+.see-all{
+  display:flex;align-items:center;gap:6px;
+  color:var(--orange);font-size:14px;font-weight:900;
+  cursor:pointer;border:2px solid var(--orange);
+  padding:8px 18px;border-radius:20px;background:none;
+  font-family:'Nunito',sans-serif;
+  transition:all .2s;text-decoration:none;
+}
+.see-all:hover{background:var(--orange);color:#fff}
+
+/* ===== GENRE CARDS ===== */
+.genres-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.genre-card{
+  background:#fff;border:2px solid var(--border);border-radius:18px;
+  padding:22px 16px;text-align:center;cursor:pointer;
+  transition:all .25s;position:relative;overflow:hidden;
+}
+.genre-card::before{
+  content:'';position:absolute;inset:0;
+  background:var(--orange);opacity:0;transition:opacity .25s;
+}
+.genre-card:hover::before{opacity:1}
+.genre-card:hover{border-color:var(--orange);transform:translateY(-4px);box-shadow:var(--shadow-hover)}
+.genre-card:hover .gc-icon svg{stroke:#fff}
+.genre-card:hover .gc-name{color:#fff}
+.genre-card:hover .gc-count{color:rgba(255,255,255,0.8)}
+.gc-icon{
+  width:56px;height:56px;border-radius:50%;
+  background:var(--orange-light);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 12px;position:relative;z-index:1;
+  transition:background .25s;
+}
+.genre-card:hover .gc-icon{background:rgba(255,255,255,0.2)}
+.gc-icon svg{stroke:var(--orange);transition:stroke .25s}
+.gc-name{font-size:15px;font-weight:900;color:var(--text);position:relative;z-index:1;transition:color .25s}
+.gc-count{font-size:12px;color:var(--text-muted);font-weight:800;position:relative;z-index:1;transition:color .25s;margin-top:3px}
+
+/* ===== FILTER BAR ===== */
+.filter-bar{display:flex;align-items:center;gap:10px;margin-bottom:24px;flex-wrap:wrap}
+.filter-tab{
+  padding:8px 18px;border-radius:20px;
+  border:2px solid var(--border);background:#fff;
+  font-size:13px;font-weight:900;cursor:pointer;
+  transition:all .2s;color:var(--text-muted);
+  font-family:'Nunito',sans-serif;
+  display:flex;align-items:center;gap:6px;
+}
+.filter-tab.active{background:var(--orange);color:#fff;border-color:var(--orange);box-shadow:0 4px 12px rgba(247,148,29,0.35)}
+.filter-tab:hover:not(.active){border-color:var(--orange);color:var(--orange)}
+
+/* ===== BOOK GRID ===== */
+.books-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:20px}
+.book-card{
+  background:#fff;border:2px solid var(--border);
+  border-radius:18px;overflow:hidden;
+  transition:all .25s;cursor:pointer;
+  animation:fadeUp .5s ease both;
+}
+.book-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-hover);border-color:var(--orange)}
+.book-cover{
+  height:180px;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.book-cover svg{width:64px;height:64px;opacity:0.8}
+.book-cover-overlay{
+  position:absolute;inset:0;
+  background:rgba(0,0,0,0);
+  display:flex;align-items:center;justify-content:center;
+  transition:background .25s;
+}
+.book-card:hover .book-cover-overlay{background:rgba(0,0,0,0.12)}
+.add-cart-quick{
+  opacity:0;transform:translateY(10px);
+  background:var(--orange);color:#fff;
+  border:none;border-radius:10px;padding:8px 18px;
+  font-size:13px;font-weight:900;cursor:pointer;
+  font-family:'Nunito',sans-serif;
+  transition:all .25s;
+  display:flex;align-items:center;gap:6px;
+}
+.book-card:hover .add-cart-quick{opacity:1;transform:translateY(0)}
+.add-cart-quick:hover{background:var(--orange-dark)}
+.book-badge-new{
+  position:absolute;top:10px;left:10px;
+  background:var(--orange);color:#fff;
+  font-size:10px;font-weight:900;
+  padding:3px 8px;border-radius:6px;
+}
+.book-badge-sale{
+  position:absolute;top:10px;left:10px;
+  background:#e53;color:#fff;
+  font-size:10px;font-weight:900;
+  padding:3px 8px;border-radius:6px;
+}
+.book-info{padding:14px}
+.book-genre-tag{
+  font-size:11px;font-weight:900;color:var(--orange);
+  text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;
+  display:flex;align-items:center;gap:4px;
+}
+.book-title{font-size:14px;font-weight:900;color:var(--text);margin-bottom:3px;line-height:1.3}
+.book-author{font-size:12px;color:var(--text-muted);font-weight:800;margin-bottom:10px}
+.book-footer{display:flex;align-items:center;justify-content:space-between}
+.book-price{font-size:16px;font-weight:900;color:var(--orange)}
+.book-old-price{font-size:12px;color:#bbb;text-decoration:line-through;font-weight:700;margin-left:4px}
+.add-btn{
+  width:34px;height:34px;border-radius:50%;
+  background:var(--orange-light);border:2px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .2s;
+}
+.add-btn:hover{background:var(--orange);border-color:var(--orange)}
+.add-btn:hover svg{stroke:#fff}
+.add-btn svg{stroke:var(--orange);transition:stroke .2s}
+
+/* ===== BANNER ===== */
+.promo-banner{
+  margin:0 5% 60px;border-radius:24px;
+  background-color:var(--orange);
+  background-image:repeating-linear-gradient(135deg,rgba(255,255,255,0.06) 0px,rgba(255,255,255,0.06) 1px,transparent 1px,transparent 20px);
+  padding:40px 48px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:24px;flex-wrap:wrap;overflow:hidden;position:relative;
+}
+.promo-banner::after{
+  content:'';position:absolute;right:-40px;top:-40px;
+  width:200px;height:200px;border-radius:50%;
+  background:rgba(255,255,255,0.08);
+}
+.promo-text h2{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;color:#fff;margin-bottom:8px}
+.promo-text p{font-size:14px;color:rgba(255,255,255,0.85);font-weight:800}
+.promo-badge{
+  background:rgba(255,255,255,0.2);
+  border:2px solid rgba(255,255,255,0.4);
+  border-radius:16px;padding:16px 24px;text-align:center;
+  color:#fff;
+}
+.promo-badge .disc{font-size:36px;font-weight:900;font-family:'Playfair Display',serif;line-height:1}
+.promo-badge .disc-lbl{font-size:13px;font-weight:800;opacity:.85}
+.btn-promo{
+  background:#fff;color:var(--orange);
+  border:none;border-radius:12px;padding:12px 26px;
+  font-size:14px;font-weight:900;cursor:pointer;
+  font-family:'Nunito',sans-serif;
+  transition:all .2s;box-shadow:0 6px 20px rgba(0,0,0,0.15);
+  display:flex;align-items:center;gap:8px;
+}
+.btn-promo:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(0,0,0,0.2)}
+
+/* ===== FOOTER ===== */
+.footer{
+  background:var(--text);color:#fff;
+  padding:48px 5% 28px;
+}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:32px;margin-bottom:40px}
+.footer-brand .footer-logo{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.footer-logo-circle{width:36px;height:36px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center}
+.footer-logo-circle svg{width:20px;height:20px}
+.footer-logo-text{font-family:'Playfair Display',serif;font-size:20px;font-weight:900;color:#fff}
+.footer-desc{font-size:13px;color:rgba(255,255,255,0.55);font-weight:700;line-height:1.7;margin-bottom:16px}
+.footer-social{display:flex;gap:8px}
+.social-btn{
+  width:36px;height:36px;border-radius:50%;
+  background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .2s;
+}
+.social-btn:hover{background:var(--orange);border-color:var(--orange)}
+.footer-col h4{font-size:14px;font-weight:900;color:#fff;margin-bottom:14px}
+.footer-col ul{list-style:none}
+.footer-col ul li{margin-bottom:8px}
+.footer-col ul li a{font-size:13px;color:rgba(255,255,255,0.5);font-weight:700;text-decoration:none;transition:color .2s;cursor:pointer}
+.footer-col ul li a:hover{color:var(--orange)}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.1);padding-top:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.footer-bottom p{font-size:12px;color:rgba(255,255,255,0.35);font-weight:700}
+
+/* ===== CART DRAWER ===== */
+.cart-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.4);
+  z-index:2000;opacity:0;pointer-events:none;
+  transition:opacity .3s;backdrop-filter:blur(4px);
+}
+.cart-overlay.open{opacity:1;pointer-events:all}
+.cart-drawer{
+  position:fixed;right:0;top:0;bottom:0;width:380px;
+  background:#fff;z-index:2001;
+  transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;
+  box-shadow:-8px 0 40px rgba(0,0,0,0.15);
+}
+.cart-drawer.open{transform:translateX(0)}
+.cart-header{
+  padding:20px 24px;border-bottom:2px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.cart-header h3{font-family:'Playfair Display',serif;font-size:20px;font-weight:900}
+.close-cart{
+  width:36px;height:36px;border-radius:50%;
+  background:var(--orange-pale);border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s;
+}
+.close-cart:hover{background:var(--orange-light)}
+.close-cart svg{stroke:var(--text)}
+.cart-items{flex:1;overflow-y:auto;padding:16px 24px}
+.cart-empty{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  height:100%;gap:12px;color:var(--text-muted);
+}
+.cart-empty svg{stroke:var(--border);width:64px;height:64px}
+.cart-empty p{font-size:15px;font-weight:900}
+.cart-item{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 0;border-bottom:1px solid var(--border);
+}
+.cart-item-cover{
+  width:50px;height:60px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.cart-item-info{flex:1}
+.cart-item-title{font-size:13px;font-weight:900;color:var(--text)}
+.cart-item-price{font-size:13px;font-weight:900;color:var(--orange);margin-top:2px}
+.cart-item-qty{
+  display:flex;align-items:center;gap:8px;
+  background:var(--orange-pale);border-radius:8px;padding:4px 8px;
+}
+.qty-btn{
+  width:22px;height:22px;border-radius:4px;border:none;
+  background:var(--orange-light);cursor:pointer;
+  font-size:14px;font-weight:900;color:var(--orange);
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s;
+}
+.qty-btn:hover{background:var(--orange);color:#fff}
+.qty-num{font-size:13px;font-weight:900;min-width:20px;text-align:center}
+.cart-footer{
+  padding:16px 24px;border-top:2px solid var(--border);
+}
+.cart-total{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.cart-total span{font-size:16px;font-weight:900;color:var(--text)}
+.cart-total strong{font-size:20px;font-weight:900;color:var(--orange)}
+.checkout-btn{
+  width:100%;padding:14px;background:var(--orange);color:#fff;
+  border:none;border-radius:12px;font-size:15px;font-weight:900;
+  cursor:pointer;font-family:'Nunito',sans-serif;
+  transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;
+  box-shadow:0 6px 20px rgba(247,148,29,0.4);
+}
+.checkout-btn:hover{background:var(--orange-dark);transform:translateY(-1px)}
+
+/* ===== TOAST ===== */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:var(--text);color:#fff;
+  padding:12px 20px;border-radius:12px;
+  font-size:14px;font-weight:900;
+  display:flex;align-items:center;gap:8px;
+  z-index:3000;transition:transform .35s cubic-bezier(.4,0,.2,1);
+  box-shadow:0 8px 24px rgba(0,0,0,0.2);
+  white-space:nowrap;
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast svg{stroke:var(--orange);flex-shrink:0}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeUp .5s ease both}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:900px){
+  .hero-visual{display:none}
+  .hero h1{font-size:36px}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .stat-item{padding:8px 16px}
+}
+@media(max-width:600px){
+  .search-bar{display:none}
+  .nav-links{display:none}
+  .promo-banner{padding:24px}
+  .footer-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <a class="nav-logo" href="#">
+    <div class="nav-logo-circle">
+      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 10C8 10 16 7 24 12C32 7 40 10 40 10L40 38C40 38 32 35 24 40C16 35 8 38 8 38Z" stroke="#fff" stroke-width="2.2" fill="none" stroke-linejoin="round"/>
+        <line x1="24" y1="12" x2="24" y2="40" stroke="#fff" stroke-width="2"/>
+        <circle cx="24" cy="24" r="3.5" fill="#fff"/>
+      </svg>
+    </div>
+    <span class="nav-logo-text">Kitobam</span>
+  </a>
+  <div class="nav-links">
+    <a class="nav-link active" href="#">Bosh sahifa</a>
+    <a class="nav-link" href="#genres">Turlar</a>
+    <a class="nav-link" href="#books">Kitoblar</a>
+    <a class="nav-link" href="#promo">Aksiya</a>
+  </div>
+  <div class="nav-right">
+    <div class="search-bar">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Kitob qidirish..." id="searchInput" oninput="filterBooks()"/>
+    </div>
+    <button class="cart-btn" onclick="toggleCart()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      <span class="cart-count" id="cartCount">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-tag">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      O'zbekistonning eng yaxshi kitob do'koni
+    </div>
+    <h1>Bilim va <em>ilhom</em> manbai</h1>
+    <p>500+ kitob, 5 ta janr — adabiyot, ertak, detektiv, ilmiy va romantik. Har bir kitobxon uchun to'g'ri kitob!</p>
+    <div class="hero-btns">
+      <button class="btn-hero btn-hero-primary" onclick="document.getElementById('books').scrollIntoView({behavior:'smooth'})">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+        Kitoblarni ko'rish
+      </button>
+      <button class="btn-hero btn-hero-secondary" onclick="document.getElementById('genres').scrollIntoView({behavior:'smooth'})">
+        Turlar bo'yicha
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="hero-visual" id="heroVisual"></div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+    <div><div class="stat-num">500+</div><div class="stat-lbl">Kitob</div></div>
+  </div>
+  <div class="stat-item">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    <div><div class="stat-num">5</div><div class="stat-lbl">Janr</div></div>
+  </div>
+  <div class="stat-item">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+    <div><div class="stat-num">12K+</div><div class="stat-lbl">Mijoz</div></div>
+  </div>
+  <div class="stat-item">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+    <div><div class="stat-num">1 kun</div><div class="stat-lbl">Yetkazish</div></div>
+  </div>
+</div>
+
+<!-- GENRES -->
+<section class="section" id="genres">
+  <div class="section-header">
+    <div>
+      <div class="section-title">Kitob <span>Turlari</span></div>
+      <div class="section-sub">O'zingizga yoqadigan janrni tanlang</div>
+    </div>
+  </div>
+  <div class="genres-grid" id="genresGrid"></div>
+</section>
+
+<!-- BOOKS -->
+<section class="section" id="books" style="padding-top:0">
+  <div class="section-header">
+    <div>
+      <div class="section-title">Barcha <span>Kitoblar</span></div>
+      <div class="section-sub" id="booksSubtitle">100 dan ortiq kitob</div>
+    </div>
+  </div>
+  <div class="filter-bar" id="filterBar"></div>
+  <div class="books-grid" id="booksGrid"></div>
+  <div style="text-align:center;margin-top:32px">
+    <button class="see-all" id="loadMoreBtn" onclick="loadMore()">
+      Yana ko'rish
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+    </button>
+  </div>
+</section>
+
+<!-- PROMO BANNER -->
+<div class="promo-banner" id="promo">
+  <div class="promo-text">
+    <h2>Yangi kitoblarga obuna bo'ling!</h2>
+    <p>Har haftada yangi kitoblar va maxsus chegirmalar haqida xabar oling</p>
+  </div>
+  <div class="promo-badge">
+    <div class="disc">20%</div>
+    <div class="disc-lbl">Birinchi xaridda chegirma</div>
+  </div>
+  <button class="btn-promo">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8 19.79 19.79 0 01.21 1.18 2 2 0 012.22 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.91a16 16 0 006.18 6.18l1.07-.56a2 2 0 012.11.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+    Bog'lanish
+  </button>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-logo">
+        <div class="footer-logo-circle">
+          <svg viewBox="0 0 48 48" fill="none"><path d="M8 10C8 10 16 7 24 12C32 7 40 10 40 10L40 38C40 38 32 35 24 40C16 35 8 38 8 38Z" stroke="#fff" stroke-width="2.2" fill="none" stroke-linejoin="round"/><line x1="24" y1="12" x2="24" y2="40" stroke="#fff" stroke-width="2"/><circle cx="24" cy="24" r="3.5" fill="#fff"/></svg>
+        </div>
+        <span class="footer-logo-text">Kitobam</span>
+      </div>
+      <p class="footer-desc">O'zbekistonning eng yirik online kitob do'koni. Bilim va ilhom manbai!</p>
+      <div class="footer-social">
+        <button class="social-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2H3v16c0 1.1.9 2 2 2h14a2 2 0 002-2V2zM7 22v-4h10v4"/></svg>
+        </button>
+        <button class="social-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2A19.79 19.79 0 018.63 18.85 19.5 19.5 0 014.5 15l-.9-1.5"/><path d="M1.3 5.6L3 9.4l2 3.6"/><path d="M22 2L12 12"/></svg>
+        </button>
+        <button class="social-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Navigatsiya</h4>
+      <ul>
+        <li><a href="#">Bosh sahifa</a></li>
+        <li><a href="#genres">Turlar</a></li>
+        <li><a href="#books">Kitoblar</a></li>
+        <li><a href="#promo">Aksiya</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Turlar</h4>
+      <ul>
+        <li><a href="#">Adabiy</a></li>
+        <li><a href="#">Ertak</a></li>
+        <li><a href="#">Detektiv</a></li>
+        <li><a href="#">Ilmiy</a></li>
+        <li><a href="#">Romantik</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Aloqa</h4>
+      <ul>
+        <li><a href="#">+998 90 123 45 67</a></li>
+        <li><a href="#">info@kitobam.uz</a></li>
+        <li><a href="#">Toshkent, O'zbekiston</a></li>
+        <li><a href="#">Du-Sha: 9:00-20:00</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2026 Kitobam. Barcha huquqlar himoyalangan.</p>
+    <p>Bilim — eng yaxshi sarmoya</p>
+  </div>
+</footer>
+
+<!-- CART DRAWER -->
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-header">
+    <h3>Savatcha</h3>
+    <button class="close-cart" onclick="toggleCart()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      <p>Savatcha bo'sh</p>
+    </div>
+  </div>
+  <div class="cart-footer">
+    <div class="cart-total">
+      <span>Jami:</span>
+      <strong id="cartTotal">0 so'm</strong>
+    </div>
+    <button class="checkout-btn" onclick="checkout()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>
+      Buyurtma berish
+    </button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toastMsg">Savatchaga qo'shildi!</span>
+</div>
+
+<script>
+// ===== DATA =====
+const GENRES_DATA=[
+  {id:'Adabiy',name:'Adabiy',count:20,color:'#FFF3E0',
+   svg:`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="9" y1="12" x2="15" y2="12"/></svg>`},
+  {id:'Ertak',name:'Ertak',count:20,color:'#E8F5E9',
+   svg:`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>`},
+  {id:'Detektiv',name:'Detektiv',count:20,color:'#F3E5F5',
+   svg:`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`},
+  {id:'Ilmiy',name:'Ilmiy',count:20,color:'#E3F2FD',
+   svg:`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>`},
+  {id:'Romantik',name:'Romantik',count:20,color:'#FCE4EC',
+   svg:`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>`}
+];
+
+const COVER_COLORS={Adabiy:'#FFF3E0',Ertak:'#E8F5E9',Detektiv:'#EDE7F6',Ilmiy:'#E3F2FD',Romantik:'#FCE4EC'};
+const COVER_SVG={
+  Adabiy:`<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#F7941D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="9" y1="12" x2="15" y2="12"/></svg>`,
+  Ertak:`<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#F7941D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>`,
+  Detektiv:`<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#F7941D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`,
+  Ilmiy:`<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#F7941D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>`,
+  Romantik:`<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#F7941D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>`
+};
+
+const titles={
+  Adabiy:["O'tkan kunlar","Kecha va kunduz","Sarob","Ulmas qoyalar","Qutlug' qon","Muhabbat va adovat","Yulduz","Begunoh","Mehrobdan chayon","Shum bola","Ko'hna dunyo","Alvido qayg'u","Bahor seli","Tog' bag'rida","Aziz do'stim","Ona yurt","Qadrli mehmon","Uchrashuv","So'ngi ko'ch","Eski daftar"],
+  Ertak:["Ming bir kecha","Zumrad va Qimmat","Kalila va Dimna","Yaxshi va Yomon","Sehrli kamar","Oltin baliq","Uch baqaloq","Baxtli oila","Quyosh va shamol","Arslonning izi","Hofiz va pari","Sehrgar chol","Botir bola","Gulbahor","Mushukcha va it","Ko'k ko'ylak","Ipak yo'l","Yomg'ir qizi","Bahorgi qush","Ajoyib o'rmon"],
+  Detektiv:["Qotillik kechasi","Sir perdasi","G'oyib sirlar","Qon izi","Oxirgi guvoh","Yashirin o'yin","Tungi ovchi","Temir quvur","Shubhali mehmon","Yo'qolgan olmos","Ikki yuz","Sovuq iz","Qora daftar","Qo'rqinch tunel","Beayon o'lim","Asl niyat","Jasorat","Ulug' sir","Siniq ko'zgu","Oxirgi kalit"],
+  Ilmiy:["Koinot siri","Kvant olami","Inson miyasi","Biologiya asoslari","Fizika dunyosi","Sun'iy intellekt","Raqamli asr","Neyron tarmoq","Ekologiya","Genetika siri","Robot va inson","Energiya kelajagi","Mars sayyorasi","Qora tuynuk","Vaqt mashinasi","Kimyo mo'jizasi","Matematika siri","Texnologiya","Astrofizika","Parallel olam"],
+  Romantik:["Birinchi muhabbat","Bahor sevgisi","Umr bo'yi","Yurak tili","Sevgi ko'prigi","To'lqin ichida","Orzular shahri","Ikki yurak","Abadiy sevgi","Yulduzlar ostida","Sevgi nidosi","Ko'z yoshlar","Bir umrlik","Bahorda uchrashuv","Seni kutaman","Qalbim sening","Ishq yo'li","Oy nurlari","Ertak sevgi","Yagonam"]
+};
+const authors=["Abdulla Qodiriy","Cho'lpon","Oydin Hojieva","Nodira xonim","Hamid Sulaymon","Zulfiya Ismoilova","Bobur Mirzo","Erkin Vohidov","Hamza Hakimzoda","Sarvar Otajonov","Dilorom Yusupova","Jamshid Karimov","Malohat Saidova","Firdavs Toshmatov","Nilufar Raximova","Botir Qosimov","Shahlo Mirzayeva","Akbar Nosirovich","Gulnora Alieva","Mirzo Ulug'bek"];
+
+let allBooks=[];let cart=[];let activeGenre='Barchasi';let showCount=12;
+
+function initData(){
+  const gs=['Adabiy','Ertak','Detektiv','Ilmiy','Romantik'];
+  gs.forEach((g,gi)=>{
+    for(let i=0;i<20;i++){
+      const price=(Math.floor(Math.random()*50)+10)*1000;
+      const isSale=Math.random()<0.2;
+      const isNew=Math.random()<0.15;
+      allBooks.push({
+        id:allBooks.length+1,
+        title:titles[g][i],
+        author:authors[(gi*4+i)%authors.length],
+        genre:g,
+        price,
+        oldPrice:isSale?Math.round(price*1.25/1000)*1000:null,
+        isNew:isNew&&!isSale,
+        isSale,
+        stock:Math.floor(Math.random()*80)+5
+      });
+    }
+  });
+}
+
+// ===== RENDER GENRES =====
+function renderGenres(){
+  const el=document.getElementById('genresGrid');
+  el.innerHTML=GENRES_DATA.map(g=>`
+    <div class="genre-card" onclick="selectGenre('${g.id}')">
+      <div class="gc-icon">${g.svg}</div>
+      <div class="gc-name">${g.name}</div>
+      <div class="gc-count">${g.count} ta kitob</div>
+    </div>`).join('');
+}
+
+function selectGenre(id){
+  activeGenre=id;showCount=12;
+  renderFilterBar();renderBooks();
+  document.getElementById('books').scrollIntoView({behavior:'smooth'});
+}
+
+// ===== FILTER BAR =====
+function renderFilterBar(){
+  const el=document.getElementById('filterBar');
+  const filterSVG={
+    Barchasi:`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>`,
+    Adabiy:`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>`,
+    Ertak:`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>`,
+    Detektiv:`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`,
+    Ilmiy:`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>`,
+    Romantik:`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>`
+  };
+  el.innerHTML=['Barchasi','Adabiy','Ertak','Detektiv','Ilmiy','Romantik'].map(g=>
+    `<button class="filter-tab${g===activeGenre?' active':''}" onclick="selectGenre('${g}')" style="display:flex;align-items:center;gap:6px">${filterSVG[g]} ${g}</button>`
+  ).join('');
+}
+
+// ===== RENDER BOOKS =====
+function getFiltered(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  return allBooks.filter(b=>{
+    const genreOk=activeGenre==='Barchasi'||b.genre===activeGenre;
+    const searchOk=!q||b.title.toLowerCase().includes(q)||b.author.toLowerCase().includes(q);
+    return genreOk&&searchOk;
+  });
+}
+
+function renderBooks(){
+  const filtered=getFiltered();
+  const shown=filtered.slice(0,showCount);
+  const el=document.getElementById('booksGrid');
+  document.getElementById('booksSubtitle').textContent=`${filtered.length} ta kitob topildi`;
+  document.getElementById('loadMoreBtn').style.display=showCount>=filtered.length?'none':'inline-flex';
+  el.innerHTML=shown.map((b,i)=>{
+    const badge=b.isSale?`<span class="book-badge-sale">Chegirma</span>`:b.isNew?`<span class="book-badge-new">Yangi</span>`:'';
+    const oldPriceHtml=b.oldPrice?`<span class="book-old-price">${b.oldPrice.toLocaleString()}</span>`:'';
+    return `<div class="book-card" style="animation-delay:${(i%12)*0.05}s">
+      <div class="book-cover" style="background:${COVER_COLORS[b.genre]}">
+        ${COVER_SVG[b.genre]}
+        ${badge}
+        <div class="book-cover-overlay">
+          <button class="add-cart-quick" onclick="addToCart(${b.id},event)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+            Savat
+          </button>
+        </div>
+      </div>
+      <div class="book-info">
+        <div class="book-genre-tag">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          ${b.genre}
+        </div>
+        <div class="book-title">${b.title}</div>
+        <div class="book-author">${b.author}</div>
+        <div class="book-footer">
+          <div style="display:flex;align-items:baseline;gap:4px">
+            <span class="book-price">${b.price.toLocaleString()} so'm</span>
+            ${oldPriceHtml}
+          </div>
+          <button class="add-btn" onclick="addToCart(${b.id},event)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterBooks(){showCount=12;renderFilterBar();renderBooks();}
+function loadMore(){showCount+=12;renderBooks();}
+
+// ===== HERO VISUAL =====
+function renderHeroVisual(){
+  const picks=[allBooks[0],allBooks[20],allBooks[40]];
+  const el=document.getElementById('heroVisual');
+  el.innerHTML=picks.map(b=>`
+    <div class="hero-book">
+      <div class="hero-book-cover" style="background:${COVER_COLORS[b.genre]}">${COVER_SVG[b.genre].replace('56','36')}</div>
+      <div class="hero-book-info">
+        <div class="hero-book-title">${b.title}</div>
+        <div class="hero-book-price">${b.price.toLocaleString()} so'm</div>
+      </div>
+    </div>`).join('');
+}
+
+// ===== CART =====
+function addToCart(id,e){
+  e.stopPropagation();
+  const b=allBooks.find(x=>x.id===id);
+  const existing=cart.find(x=>x.id===id);
+  if(existing)existing.qty++;
+  else cart.push({...b,qty:1});
+  updateCartUI();
+  showToast(`"${b.title}" savatchaga qo'shildi!`);
+}
+
+function updateCartUI(){
+  const total=cart.reduce((s,x)=>s+x.qty,0);
+  document.getElementById('cartCount').textContent=total;
+  const totalPrice=cart.reduce((s,x)=>s+x.price*x.qty,0);
+  document.getElementById('cartTotal').textContent=totalPrice.toLocaleString()+' so\'m';
+  const el=document.getElementById('cartItems');
+  if(!cart.length){
+    el.innerHTML=`<div class="cart-empty">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      <p>Savatcha bo'sh</p>
+    </div>`;
+  } else {
+    el.innerHTML=cart.map(x=>`
+      <div class="cart-item">
+        <div class="cart-item-cover" style="background:${COVER_COLORS[x.genre]}">${COVER_SVG[x.genre].replace('width="56" height="56"','width="28" height="28"')}</div>
+        <div class="cart-item-info">
+          <div class="cart-item-title">${x.title}</div>
+          <div class="cart-item-price">${x.price.toLocaleString()} so'm</div>
+        </div>
+        <div class="cart-item-qty">
+          <button class="qty-btn" onclick="changeQty(${x.id},-1)">−</button>
+          <span class="qty-num">${x.qty}</span>
+          <button class="qty-btn" onclick="changeQty(${x.id},1)">+</button>
+        </div>
+      </div>`).join('');
+  }
+}
+
+function changeQty(id,delta){
+  const item=cart.find(x=>x.id===id);
+  if(!item)return;
+  item.qty+=delta;
+  if(item.qty<=0)cart=cart.filter(x=>x.id!==id);
+  updateCartUI();
+}
+
+function toggleCart(){
+  const d=document.getElementById('cartDrawer');
+  const o=document.getElementById('cartOverlay');
+  d.classList.toggle('open');o.classList.toggle('open');
+}
+
+function checkout(){
+  if(!cart.length){showToast('Savatcha bo\'sh!');return;}
+  cart=[];updateCartUI();toggleCart();
+  showToast('Buyurtmangiz qabul qilindi! Rahmat!');
+}
+
+// ===== TOAST =====
+function showToast(msg){
+  const t=document.getElementById('toast');
+  document.getElementById('toastMsg').textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// ===== NAVBAR SCROLL =====
+window.addEventListener('scroll',()=>{
+  document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>20);
+});
+
+// ===== INIT =====
+initData();
+renderGenres();
+renderFilterBar();
+renderBooks();
+renderHeroVisual();
+</script>
+</body>
+</html>
